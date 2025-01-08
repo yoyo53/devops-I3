@@ -42,7 +42,7 @@ pipeline {
         stage('Test in Development') {
             steps {
                 script {
-                    int status = sh(script: "curl -sLI -w '%{http_code}' http://$(minikube ip):30001 -o /dev/null", returnStdout: true)
+                    int status = sh(script: "curl -sLI -w '%{http_code}' http://\$(minikube ip):30001 -o /dev/null", returnStdout: true)
                     if (status != 200) {
                         error("Application test failed in development environment")
                     }
