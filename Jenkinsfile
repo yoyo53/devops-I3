@@ -7,21 +7,56 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/yoyo53/devops-I3'
             }
         }
-    }
-    stage('Building image') {
-        steps {
-            script {
-                dir('webapi') {
-                    image = docker.build("yoyo53/devops-I3")
+
+        stage('Building image') {
+            steps {
+                script {
+                    dir('webapi') {
+                        image = docker.build("yoyo53/devops-i3")
+                    }
                 }
             }
         }
-    }
-    stage('Publish Image') {
-        steps {
-            script {
-                docker.withRegistry('https://ghcr.io', 'ghcr') {
-                    image.push('latest')
+
+        stage('Publish Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://ghcr.io', 'ghcr') {
+                        image.push('latest')
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Development') {
+            steps {
+                script {
+                    sh """
+                        kubectl create namespace development
+                        kubectl apply -n development -f k8s/deployment.yaml
+                    """
+                }
+            }
+        }
+
+        stage('Test in Development') {
+            steps {
+                script {
+                    int status = sh(script: "curl -sLI -w '%{http_code}' http://localhost:8085 -o /dev/null", returnStdout: true)
+                    if (status != 200) {
+                        error("Application test failed in development environment")
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Production') {
+            steps {
+                script {
+                    sh """
+                        kubectl create namespace production
+                        kubectl apply -n production -f k8s/deployment.yaml
+                    """
                 }
             }
         }
