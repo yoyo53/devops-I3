@@ -34,7 +34,7 @@ pipeline {
                     sh """
                         kubectl create namespace development
                         kubectl apply -n development -f k8s/deployment.yaml
-                        kubectl wait --for=condition=available --timeout=30s deployment/webapi
+                        kubectl wait --for=condition=available --timeout=30s deployment/devops-i3
                     """
                 }
             }
@@ -57,7 +57,7 @@ pipeline {
                     sh """
                         kubectl create namespace production
                         kubectl apply -n production -f k8s/deployment.yaml
-                        kubectl wait --for=condition=available --timeout=30s deployment/webapi
+                        kubectl wait --for=condition=available --timeout=30s deployment/devops-i3
                     """
                 }
             }
