@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        kubectl create namespace development
+                        kubectl create namespace development --dry-run=client -o yaml | kubectl apply -f -
                         kubectl apply -n development -f k8s/deployment.yaml
                         kubectl wait -n development --for=condition=available --timeout=30s deployment/devops-i3
                     """
@@ -51,11 +51,21 @@ pipeline {
             }
         }
 
+        stage('Delete Development') {
+            steps {
+                script {
+                    sh """
+                        kubectl delete -n development -f k8s/deployment.yaml
+                    """
+                }
+            }
+        }
+
         stage('Deploy to Production') {
             steps {
                 script {
                     sh """
-                        kubectl create namespace production
+                        kubectl create namespace production --dry-run=client -o yaml | kubectl apply -f -
                         kubectl apply -n production -f k8s/deployment.yaml
                         kubectl wait -n production --for=condition=available --timeout=30s deployment/devops-i3
                     """
