@@ -30,6 +30,8 @@ Here is the screen of some alerts that we implemented on prometheus
 
 You should have also received an email alert with our group name: No Backup No Cry.
 
+![Image](./screen_mail_alert.png)
+
 ## Loki
 
 (Screenshot of Loki configured as a data source in Grafana)
