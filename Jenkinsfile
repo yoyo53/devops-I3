@@ -18,6 +18,16 @@ pipeline {
             }
         }
 
+        // stage('Build Image with buildpacks') {
+        //     steps {
+        //         script {
+        //             dir('webapi') {
+        //                 sh 'pack build --path webapi --builder paketobuildpacks/builder-jammy-tiny yoyo53/devops-i3'
+        //             }
+        //         }
+        //     }
+        // }
+
         stage('Publish Image') {
             steps {
                 script {
